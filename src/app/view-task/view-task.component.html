@@ -1,0 +1,91 @@
+<div class="dashed">
+<div class="row1">
+<label class="col-sm-2">Task</label>
+<input class="col-sm-2" type="text" id="search" [(ngModel)]="searchTasks"  name="searchTasks" placeholder="Search By Task">
+<label class="col-sm-2">Priority</label>
+<input class="col-sm-2" type="text" id="search" [(ngModel)]="searchPriority" name="searchPriority" placeholder="Search By Priority">
+<label class="col-sm-2">Parent Task</label>
+<input class="col-sm-2" type="text" align="right" id="search" [(ngModel)]="searchParentTasks" name="searchParentTasks" placeholder="Search By Parent Task">
+</div>
+<div class="row2">
+<label class="col-sm-2">Start Date</label>
+<input class="col-sm-2" type="date" id="search" [(ngModel)]="searchStartDate"  name="searchStartDate" >
+<label class="col-sm-2">End Date</label>
+<input class="col-sm-2" type="date" id="search" [(ngModel)]="searchEnddate"  name="searchEnddate" >
+</div>
+</div>
+<ul></ul>
+<div class="dashed">
+<table id="displaytask"class="table table-hover">
+    <thead class="thead-dark">
+      <tr>
+        <th>Sl.No</th>          
+        <th>Task</th>
+        <th>Priority</th>
+        <th>Parent Task</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Edit</th>
+        <th>End Task</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of tasks | taskFilter : searchTasks : searchPriority : searchParentTasks : searchStartDate :searchEnddate  ; index as i " >
+        <td >{{ i+1 }}</td>
+        <td >{{ data.task }}</td>
+        <td scope="row" >{{ data.priority | number}}</td>
+        <td>{{ data.parentTask }}</td>
+        <td>{{ data.startDate | date : 'dd/MM/yyyy' }}</td>
+        <td>{{ data.endDate | date : 'dd/MM/yyyy' }}</td>
+        <td><button [disabled]="!data.activeTask" type="button"  (click)="editTask(content,data)"  class="glyphicon glyphicon-check">Edit</button></td>
+        <td><button  type="button" (click)="endTask(data)" class="glyphicon glyphicon-check">End Task</button></td>        
+      </tr>
+    </tbody>
+  </table>
+</div>
+<ng-template #content let-modal>
+  <div class="dashed">
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Update Task Details</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form id="formmodel" #taskForm="ngForm"  (ngSubmit)="onSubmit(taskModel)" >
+      <div class="form-group">
+        <label>task</label>
+        <input  type="text" #task="ngModel" placeholder="task" required class="form-control" 
+        [class.is-invalid]="task.invalid && task.touched" name="task" 
+        [(ngModel)]="taskModel.task">
+        <small class="text-danger" [class.d-none]="task.valid || task.untouched">Task is required</small>
+      </div>
+   
+    <div class="form-group">
+          <label>priority</label>
+          <p>{{taskModel.priority}}</p>
+          <input type="range" min="0" max="30"  #priority="ngModel" placeholder="priority" required class="form-control"  [class.is-invalid]="priority.invalid && priority.touched" name="priority" [(ngModel)]="taskModel.priority">
+              <small class="text-danger" [class.d-none]="priority.valid || priority.untouched">Priority is required</small>
+        </div>
+        <div class="form-group">
+            <label>ParentTask</label>
+            <input type="text" #parentTask="ngModel" placeholder="parentTask" required class="form-control"  [class.is-invalid]="parentTask.invalid && parentTask.touched" name="parentTask" [(ngModel)]="taskModel.parentTask">
+                        <small class="text-danger" [class.d-none]="parentTask.valid || parentTask.untouched">ParentTask is required</small>
+          </div>
+
+              <div class="form-group">
+                <label>Start Date</label>
+                <input type="date" [value]="date" #startDate="ngModel" placeholder="startDate" required class="form-control"  [class.is-invalid]="startDate.invalid && startDate.touched"name="startDate" [(ngModel)]="taskModel.startDate">
+                            <small class="text-danger" [class.d-none]="startDate.valid || startDate.untouched">Start Date is required</small>
+              </div>
+            <div class="form-group">
+                <label>End Date</label>
+                <input type="date" [value]="date" #endDate="ngModel" placeholder="endDate" required class="form-control" [class.is-invalid]="endDate.invalid && endDate.touched" name="endDate" [(ngModel)]="taskModel.endDate">
+                            <small class="text-danger" [class.d-none]="endDate.valid || endDate.untouched">End Date is required</small>
+              </div>
+          <button class="btn btn-primary" type="submit"   [disabled]="taskForm.form.invalid" >Save Changes</button>
+         
+    </form>
+  </div>
+</div>
+</ng-template>
